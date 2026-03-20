@@ -1,0 +1,73 @@
+# --------------------------------------
+# LaTeX build files (DO NOT COMMIT)
+# --------------------------------------
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.dvi
+*.bbl
+*.blg
+*.run.xml
+*.nav
+*.snm
+*.vrb
+
+# Generated PDF (optional)
+# comment this out if you want to keep final PDFs
+# *.pdf
+
+# --------------------------------------
+# Editor / IDE temporary files
+# --------------------------------------
+*~
+*.swp
+*.swo
+*.tmp
+*.bak
+*.backup
+
+# --------------------------------------
+# macOS system files
+# --------------------------------------
+.DS_Store
+.AppleDouble
+.LSOverride
+__MACOSX/
+
+# --------------------------------------
+# MATLAB
+# --------------------------------------
+# MATLAB autosaves
+*.asv
+*.m~
+# MATLAB crash reports
+MATLABCrash*.txt
+
+# --------------------------------------
+# Python virtual environments (if ever used)
+# --------------------------------------
+venv/
+.env/
+ENV/
+env/
+
+# --------------------------------------
+# Overleaf / auxiliary dump directories
+# --------------------------------------
+latex.out/
+build/
+_output/
+
+# --------------------------------------
+# PGF/TikZ accidental package dumps
+# (The huge tex/, source/, scripts/ folders)
+# --------------------------------------
+tex/
+source/
+scripts/

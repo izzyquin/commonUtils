@@ -1,0 +1,47 @@
+name: Unit Test Module
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "**/*.cpp"
+      - "**/*.h"
+      - "**/*.sh"
+
+  pull_request:
+    paths:
+      - "**/*.cpp"
+      - "**/*.h"
+      - "**/*.sh"
+
+jobs: 
+  detect-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install GoogleTest
+        run: |
+          sudo apt-get update && \
+          sudo apt-get install -y libgtest-dev cmake && \
+          cd /usr/src/gtest && \
+          sudo cmake . && \
+          sudo make && \
+          sudo cp lib/libgtest.a /usr/lib/ && \
+          sudo cp lib/libgtest_main.a /usr/lib/ 
+
+      - name: Run tests for changed modules
+        run: |
+          find . -type f -name 'test*.sh' | while read test_script; do
+            echo "Running $test_script"
+
+            # get directory of the script
+            dir=$(dirname "$test_script")
+            (
+              cd "$dir"
+              bash "./$(basename "$test_script")"
+            )
+          done
+  
