@@ -30,22 +30,22 @@ A lightweight tree-like directory listing tool for Linux/macOS.
 ```bash
 ldir
 ```
-	Lists the current folder with full depth.
+Lists the current folder with full depth.
 
 ```bash
 ldir -L 3
 ```
-	Lists the current folder up to depth 3.
+Lists the current folder up to depth 3.
 
 ```bash
 ldir my_folder
 ```
-	Lists a specific folder with full depth.
+Lists a specific folder with full depth.
 
 ```bash
 ldir my_folder 2
 ```
-	Lists a specific folder up to depth 2.
+Lists a specific folder up to depth 2.
 
 
 ## Optional Flags
