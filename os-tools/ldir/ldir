@@ -1,0 +1,111 @@
+#!/usr/bin/env python3
+
+import os
+import argparse
+from typing import Optional, List
+
+# ANSI colors
+BLUE = "\033[34m"
+WHITE = "\033[37m"
+RESET = "\033[0m"
+
+def colorize(name: str, is_dir: bool, use_color: bool) -> str:
+    if not use_color:
+        return name
+    return f"{BLUE}{name}{RESET}" if is_dir else f"{WHITE}{name}{RESET}"
+
+def list_dir(
+    path: str,
+    max_depth: Optional[int],
+    current_depth: int = 0,
+    prefix: str = "",
+    use_color: bool = True,
+    dirs_only: bool = False,
+):
+    try:
+        entries: List[str] = sorted(os.listdir(path))
+    except PermissionError:
+        print(prefix + "└── [Permission Denied]")
+        return
+
+    # dirs first (like real tree)
+    entries.sort(key=lambda e: (not os.path.isdir(os.path.join(path, e)), e.lower()))
+
+    if dirs_only:
+        entries = [e for e in entries if os.path.isdir(os.path.join(path, e))]
+
+    total = len(entries)
+
+    for i, entry in enumerate(entries):
+        is_last = i == total - 1
+        connector = "└── " if is_last else "├── "
+
+        full_path = os.path.join(path, entry)
+        is_dir = os.path.isdir(full_path)
+
+        print(prefix + connector + colorize(entry, is_dir, use_color))
+
+        child_prefix = prefix + ("    " if is_last else "│   ")
+
+        if is_dir:
+            if max_depth is not None and current_depth + 1 >= max_depth:
+                print(child_prefix + "└── ...")
+            else:
+                list_dir(
+                    full_path,
+                    max_depth,
+                    current_depth + 1,
+                    child_prefix,
+                    use_color,
+                    dirs_only,
+                )
+
+def main():
+    parser = argparse.ArgumentParser(
+        prog="ldir",
+        description="A lightweight tree-like directory listing tool.",
+    )
+
+    parser.add_argument(
+        "path",
+        nargs="?",
+        default=".",
+        help="Directory path (default: current directory)",
+    )
+
+    parser.add_argument(
+        "-L",
+        "--level",
+        type=int,
+        default=3,
+        help="Max display depth (like tree -L)",
+    )
+
+    parser.add_argument(
+        "--no-color",
+        action="store_true",
+        help="Disable colored output",
+    )
+
+    parser.add_argument(
+        "-d",
+        "--dirs-only",
+        action="store_true",
+        help="List directories only",
+    )
+
+    args = parser.parse_args()
+
+    path = os.path.abspath(args.path)
+
+    print(path)
+    list_dir(
+        path=path,
+        max_depth=args.level,
+        use_color=not args.no_color,
+        dirs_only=args.dirs_only,
+    )
+
+
+if __name__ == "__main__":
+    main()
