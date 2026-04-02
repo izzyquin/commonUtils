@@ -1,4 +1,4 @@
-#include "Dijkstra.h"
+#include "./dijkstra.h"
 
 #include <iostream>
 #include <limits>
@@ -8,11 +8,10 @@ namespace {
     constexpr int INVALID_IDX = -1;
 }
 
-dijkstra::dijkstra(const std::vector<std::vector<DataType>>& distTable)
+dijkstra::dijkstra(const std::vector<std::vector<double>>& distTable)
     : V(static_cast<int>(distTable.size())),
       adjMatrix(distTable),
-      distMatrix(static_cast<int>(distTable.size()),
-                  std::vector<DataType>(static_cast<int>(distTable.size()), DataType(INF))) {
+      distMatrix(V, std::vector<double>(V, inf)) {
     if (V <= 0) {
         throw std::invalid_argument("dijkstra: adjacency matrix must be non-empty");
     }
@@ -26,23 +25,23 @@ dijkstra::dijkstra(const std::vector<std::vector<DataType>>& distTable)
     // Dijkstra requires non-negative edge weights.
     for (int i = 0; i < V; i++) {
         for (int j = 0; j < V; j++) {
-            const int w = adjMatrix[i][j].getData();
-            if (w != INF && w < 0) {
+            const double w = adjMatrix[i][j];
+            if (w != inf && w < 0) {
                 throw std::invalid_argument("dijkstra: negative edge weights are not supported");
             }
         }
     }
 }
 
-int dijkstra::minDistance(const std::vector<DataType>& dist, const std::vector<bool>& visited) const {
+int dijkstra::minDistance(const std::vector<double>& dist, const std::vector<bool>& visited) const {
     ASSERT_RETURN(static_cast<int>(dist.size()) == V, INVALID_IDX);
     ASSERT_RETURN(static_cast<int>(visited.size()) == V, INVALID_IDX);
 
     int index = INVALID_IDX;
-    int min_val = INF;
+    double min_val = inf;
 
     for (int i = 0; i < V; i++) {
-        const int di = dist[i].getData();
+        const double di = dist[i];
         if (!visited[i] && di <= min_val) {
             min_val = di;
             index = i;
@@ -51,39 +50,32 @@ int dijkstra::minDistance(const std::vector<DataType>& dist, const std::vector<b
     return index;
 }
 
-std::vector<DataType> dijkstra::calc(int src) {
-    ASSERT_RETURN(src >= 0 && src < V, std::vector<DataType>{});
+std::vector<double> dijkstra::calc(int src) {
+    ASSERT_RETURN(src >= 0 && src < V, std::vector<double>{});
 
     std::vector<bool> visited(V, false);
-    std::vector<DataType> dist(V, DataType(INF));
-    dist[src] = DataType(0);
+    std::vector<double> dist(V, inf);
+    dist[src] = 0;
 
     for (int count = 0; count < V; count++) {
         const int u = minDistance(dist, visited);
-        if (u == INVALID_IDX || dist[u].getData() == INF) {
+        if (u == INVALID_IDX || dist[u] == inf) {
             break; // no reachable remaining vertices
         }
 
         visited[u] = true;
         for (int v = 0; v < V; v++) {
-            if (visited[v]) {
-                continue;
-            }
+            if (visited[v]) continue;
 
-            const int w = adjMatrix[u][v].getData();
-            if (w == INF) {
-                continue; // no edge
-            }
+            double w = adjMatrix[u][v];
+            if (w == inf)  continue; // no edge
 
-            const int du = dist[u].getData();
-            if (du == INF) {
-                continue;
-            }
+            double du = dist[u];
+            if (du == inf) continue;
 
-            const long long cand_ll = static_cast<long long>(du) + static_cast<long long>(w);
-            const int cand = (cand_ll > INF) ? INF : static_cast<int>(cand_ll);
-            if (cand < dist[v].getData()) {
-                dist[v] = DataType(cand);
+            double cand = du + w;
+            if (cand < dist[v]) {
+                dist[v] = cand;
             }
         }
     }
@@ -111,11 +103,8 @@ void dijkstra::print() const {
                 std::cout << j << "\t";
                 continue;
             }
-            std::cout << distMatrix[i][j].getData() << "\t";
+            std::cout << distMatrix[i][j] << "\t";
         }
         std::cout << std::endl;
     }
 }
-
-
-

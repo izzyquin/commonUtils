@@ -1,10 +1,5 @@
 add_executable(graph_tests
-    graph.cpp
-    ../lib/node.cpp
-    ../lib/stack.cpp
-    ../lib/queue.cpp
-    ../lib/DataType.cpp
-    tests/test_graph.cpp
+   tests/test_graph.cpp
 )
 
 target_compile_features(graph_tests PRIVATE cxx_std_20)

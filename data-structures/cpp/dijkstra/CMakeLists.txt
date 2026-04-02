@@ -1,6 +1,5 @@
 add_executable(dijkstra_tests
-    Dijkstra.cpp
-    ../lib/DataType.cpp
+    dijkstra.cpp
     tests/test_dijkstra.cpp
 )
 

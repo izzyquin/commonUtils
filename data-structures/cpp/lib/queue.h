@@ -5,24 +5,48 @@
 #include "../lib/assert_lib.h"
 #include "node.h"
 
-class DataType;
-
+template<typename T>
 class Queue {
 private:
-    std::vector<Node*> items;
-    int     top;
-    int     _maxItems;
+    std::vector<T> items;
+    int maxItems_;
 
 public:
-    Queue(int max_items = 10);
+    Queue(int max_items = 10000) : maxItems_(max_items) {
+            items.resize(max_items);
+    }
 
-    bool  push(Node* data);
-    Node* pop();
+    bool push(T& data) {
+        ASSERT_RETURN(!isFull(), false);
+        items.push_back(data);
+        return true;
+    }
 
-    bool isEmpty();
-    bool isFull();
-    int  getLimit();
-    void print() const;
+    T pop() {
+        if (isEmpty()) throw std::out_of_range("Queue is empty");
+        T val= items.front();
+        items.erase(items.begin());
+        return val;
+    }
+
+    bool isEmpty() const {
+        return items.empty();
+    }
+
+    bool isFull() const {
+        return items.size() == maxItems_ - 1;
+    }
+
+    int  getLimit() const {
+        return maxItems_;
+    }
+
+    void print() const {
+        for (int i = 0 ; i <= items.size(); i++)
+            std::cout << items[i] << " ";
+        std::cout << "\n";
+    }
 };
+
 
 #endif // QUEUE_H

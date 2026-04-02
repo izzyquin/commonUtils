@@ -2,32 +2,116 @@
 #define GRAPH_H
 
 #include <map>
+#include <iostream>
+#include <stack>
+#include <queue>
+#include <unordered_set>
 #include <vector>
 #include "../lib/assert_lib.h"
-#include "stack.h"
-#include "queue.h"
+#include "../lib/node.h"
 
-class graph {
+template<typename T>
+class Graph {
 private:
-    int _max_node_child;
-    std::map<DataType, Node*> vertex_storage;
+    std::map<T, std::unique_ptr<Node<T>>> vertex_storage;
+
+    Node<T>* findNode(const T& key) {
+        auto it = vertex_storage.find(key);
+        return (it != vertex_storage.end()) ? it->second.get() : nullptr;
+    }
+
+    Node<T>* GetOrCreateNode(const T& key) {
+        auto it = vertex_storage.find(key);
+
+        if (it == vertex_storage.end()) {
+            auto node = std::make_unique<Node<T>>(key);
+            auto raw_ptr = node.get();
+            vertex_storage.insert({key, std::move(node)});
+            return raw_ptr;
+        }
+
+        return it->second.get();
+    }
 
 public:
-    graph(int max_node_child = 2);
+    Graph() = default;
     
-    ~graph();
+    ~Graph() = default;
 
-    Node* find(DataType* key);
+    void addEdge(const T& src, const T& dst)  {
+        auto src_node = GetOrCreateNode(src);
+        auto dst_node = GetOrCreateNode(dst);
 
-    Node* findNode(DataType* key, bool storeIfNotExist);
+        src_node->addChild(dst_node);
+    }
 
-    void addEdge(DataType* src, DataType* dst);
+    std::vector<T> dfs(const T& src) {
+        std::vector<T> rv;
 
-    std::vector<DataType> DFS_traverse(DataType* src);
+        auto src_node = findNode(src);
+        if (!src_node) return rv;
 
-    std::vector<DataType> BFS_traverse(DataType* src);
+        std::stack<Node<T>*> nodes;
+        std::unordered_set<Node<T>*> visited;
 
-    static void print(const std::vector<DataType>& vec);
+        nodes.push(src_node);
+        visited.insert(src_node);
+
+        while (!nodes.empty()) {
+            auto curr = nodes.top();
+            nodes.pop();
+
+            rv.push_back(curr->getData());
+
+            for (auto child : curr->getChildren()) {
+                if (!visited.count(child)) {
+                    visited.insert(child);
+                    nodes.push(child);
+                }
+            }
+        }
+
+        return rv;
+    }
+
+    std::vector<T> bfs(const T& src) {
+        std::vector<T> rv;
+
+        auto src_node = findNode(src);
+        if (!src_node) return rv;
+
+        std::unordered_set<Node<T>*> visited;
+        std::queue<Node<T>*> nodes;
+
+        visited.insert(src_node);
+        nodes.push(src_node);
+
+        while(!nodes.empty()) {
+            auto curr = nodes.front();
+            nodes.pop();
+
+            rv.push_back(curr->getData());
+
+            for (auto child : curr->getChildren()) {
+                if (!visited.count(child)) {
+                    visited.insert(child);
+                    nodes.push(child);
+                }
+            }
+        }
+
+        return rv;
+    }
+
+    static void print(const std::vector<T>& vec) {
+        if (vec.empty()) return;
+
+        std::cout << vec[0];
+        for (std::size_t i = 1; i < vec.size(); i++) {
+            std::cout << "," << vec[i];
+        }
+        std::cout << "\n";
+    }
 };
 
-#endif // QRAPH_H
+#endif // GRAPH_H

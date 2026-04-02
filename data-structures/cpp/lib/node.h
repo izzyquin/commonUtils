@@ -3,32 +3,22 @@
 
 #include <vector>
 #include "../lib/assert_lib.h"
-#include "../lib/DataType.h"
 
-class DataType;
-
+template<typename T>
 class Node {
 private:
-    DataType    data;
-    int         maxVertices;
-    bool        _isVisited;
-    std::vector<Node*> childList;
-
-    // Declare friend class
-    friend class graph;
+    T data;
+    std::vector<Node<T>*> childList;
 
 public:
 
-    Node(DataType* data, int max_vertices = 2);
+    Node(const T& val) : data(val) {}
 
-    bool addChild(Node* v);
+    T getData() const { return data; }
 
-    int getNumberOfChild();
-
-    DataType getData();
-
-    bool isVisited();
-    void setVisited(bool val);
+    void addChild(Node<T>* child) { childList.push_back(child); }
+    int getNumberOfChild() const { return childList.size(); }
+    const std::vector<Node<T>*>& getChildren(){ return childList; }
 };
 
 #endif // NODE_H

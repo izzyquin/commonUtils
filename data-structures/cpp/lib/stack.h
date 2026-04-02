@@ -5,24 +5,43 @@
 #include "../lib/assert_lib.h"
 #include "node.h"
 
-class DataType;
-
+template<typename T>
 class Stack {
 private:
-    std::vector<Node*> items;
-    int     top;
-    int     _maxItems;
+    std::vector<T> items;
+    int top;
+    int maxItems_;
 
 public:
-    Stack(int max_items = 10);
+    Stack(int max_items = 10000)
+    : maxItems_(max_items) {}
 
-    bool  push(Node* data);
-    Node* pop();
+    bool push(T& data) {
+        ASSERT_RETURN(!isFull(), false);
+        items.push_back(data);
+        return true;
+    }
 
-    bool isEmpty();
-    bool isFull();
-    int  getLimit();
-    void print() const;
+    T pop() {
+        if (isEmpty()) throw std::out_of_range("Stack is empty");
+
+        T rc = items.back();
+        items.pop_back();
+        return rc;
+    }
+
+    bool isEmpty() { return items.size() == 0; }
+
+    bool isFull() { return items.size() >= maxItems_; }
+
+    int  getLimit() { return maxItems_; }
+
+    void print() const {
+        for (int i = 0 ; i <= top; i++)
+            std::cout << items[i] << " ";
+        std::cout << "\n";
+    }
 };
+
 
 #endif // STACK_H

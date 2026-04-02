@@ -11,24 +11,23 @@ This repository serves as a personal reference library, playground, and template
 Implementations of classic algorithms and data structures in C++ and Python.
 
 #### **dijkstra/**
-- `Dijkstra.cpp`, `Dijkstra.h` — implementation of Dijkstra’s shortest path algorithm.
+- `dijkstra.cpp`, `dijkstra.h` — implementation of Dijkstra’s shortest path algorithm.
 
 #### **graph/**
 A full custom graph library including:
 - Graph traversal: **BFS**, **DFS**
-- Supporting components:
-  - `Node.*`
-  - `Queue.*`
-  - `Stack.*`
-  - `DataType.*`
-- Tests: `testGraph.cpp`, `testGraph.sh`
+- Tests: `test_graph.cpp`, `run_gtest.sh`
 
 #### **trie/**
 - Trie data structure (`TrieNode.*`)
-- Tests: `testTrieNode.cpp`, `testTrieNode.sh`
+- Tests: `test_trie_tode.cpp`, `run_gtest.sh`
 
 #### **lib/**
 - Utility headers such as `assert_lib.h`
+- Basic components:
+  - `Node.h`
+  - `Queue.h`
+  - `Stack.h`
 
 #### **py/**
 - Python utilities (e.g., `testHashMap.py`)
@@ -65,10 +64,9 @@ git clone git@github.com:izzyquin/commonUtils.git
 cd commonUtils
 ```
 
-### Compile C++ examples
+### Run C++ test scripts
 ```bash
-g++ -std=c++17 data-structures/graph/graph.cpp -o graph
-./graph
+./data-structures/cpp/run_gtest.sh
 ```
 
 ### Run Python scripts
